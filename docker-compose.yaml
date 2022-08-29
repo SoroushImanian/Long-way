@@ -1,0 +1,37 @@
+version: "3.3"
+services:
+  haproxy:
+    image: haproxy:2.0
+    container_name: haproxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+
+  nginx1:
+    image: nginx:latest
+    container_name: nginx1
+    ports:   
+      - "81:81"       
+    volumes:
+      - ./config/nginx/nginx1.conf:/etc/nginx/nginx.conf
+
+  nginx2:     
+    image: nginx:latest
+    container_name: nginx2
+    ports:
+      - "82:82"
+    volumes:
+      - ./config/nginx/nginx2.conf:/etc/nginx/nginx.conf
+  
+  app1:
+    image: 172.16.16.103:5000/root/p1:1.0
+    container_name: app1
+    ports:
+      - "83:3000"
+
+  app2:
+    image: 172.16.16.103:5000/root/p1:1.0
+    container_name: app2
+    ports:
+      - "84:3000"
