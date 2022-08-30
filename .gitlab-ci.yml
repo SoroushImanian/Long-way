@@ -44,7 +44,6 @@ build_image:
     - remote
     - shell
   before_script:
-    - docker info
     - chmod 666 $PRIVATE_KEY_SERVER1
     # - chmod 666 /var/run/docker.sock
   script:
