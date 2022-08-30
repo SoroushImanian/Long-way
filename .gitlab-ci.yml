@@ -1,1 +1,79 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH != "master" && $CI_PIPELINE_SOURCE != "merge_request_event"      
+      when: never
+    - when: always
 
+variables:
+  IMAGE_NAME: $NEXUS_REGISTRY/root/p1
+  IMAGE_TAG: "1.0"
+  DEV_SERVER2_HOST: 172.16.16.102
+  DEV_SERVER_HOST: 172.16.16.104
+  DEV_ENDPOINT: http://172.16.16.104:3000
+
+stages:
+  - build
+  - deploy
+
+# run_unit_tests:
+#   image: node:alpine
+#   stage: test
+#   tags:
+#     - ec2
+#     - remote 
+#     - shell
+#   before_script:
+#     - ls
+#     - cd app
+#     - npm install
+#   script:
+#     - npm test
+#   artifacts:
+#     when: always
+#     paths:
+#       - app/junit.xml
+#     reports:
+#       junit: app/junit.xml
+
+
+build_image:
+  stage: build
+  tags:
+    - ec2
+    - remote
+    - shell
+  before_script:
+    - docker info
+    - chmod 666 $PRIVATE_KEY_SERVER1
+    # - chmod 666 /var/run/docker.sock
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+
+push_image:
+  stage: build
+  tags:
+    - ec2
+    - remote
+    - shell
+  before_script:
+    - docker login -u $NEXUS_USER -p $NEXUS_PASSWD $NEXUS_REGISTRY
+  script:
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+
+deploy_to_dev:
+  stage: deploy
+  tags:
+    - ec2
+    - remote
+    - shell
+  script:
+    - scp -o StrictHostKeyChecking=no ./docker-compose.yaml root@$DEV_SERVER_HOST:/home/vagrant
+    - ssh -o StrictHostKeyChecking=no root@$DEV_SERVER_HOST "
+        docker login -u $NEXUS_USER -p $NEXUS_PASSWD $NEXUS_REGISTRY &&
+        docker-compose -f /root/loadbalancer/home/vagrant/docker-compose.yaml down &&
+        docker-compose -f /root/loadbalancer/docker-compose.yaml up -d"
+  # environment:
+  #   name: development
+  #   url: $DEV_ENDPOINT
