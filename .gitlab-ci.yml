@@ -70,6 +70,10 @@ deploy_to_dev:
     - scp -o StrictHostKeyChecking=no ./docker-compose.yaml root@$DEV_SERVER_HOST:/root/loadbalance
     - ssh -o StrictHostKeyChecking=no root@$DEV_SERVER_HOST "
         cd loadbalancer && docker login -u $NEXUS_USER -p $NEXUS_PASSWD $NEXUS_REGISTRY &&
+
+        export DC_IMAGE_NAME=$IMAGE_NAME &
+        export DC_IMAGE_TAG=$IMAGE_TAG &
+
         docker-compose down &&
         docker-compose up -d"
   environment:

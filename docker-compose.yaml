@@ -25,13 +25,13 @@ services:
       - ./config/nginx/nginx2.conf:/etc/nginx/nginx.conf
   
   app1:
-    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    image: ${DC_IMAGE_NAME}:${DC_IMAGE_TAG}
     container_name: app1
     ports:
       - "83:3000"
 
   app2:
-    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    image: ${DC_IMAGE_NAME}:${DC_IMAGE_TAG}
     container_name: app2
     ports:
       - "84:3000"
