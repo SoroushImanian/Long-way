@@ -70,8 +70,8 @@ deploy_to_dev:
     - shell
   script:
     - scp -o StrictHostKeyChecking=no ./docker-compose.yaml root@$DEV_SERVER_HOST:/root/loadbalance
-    - ssh -o StrictHostKeyChecking=no root@$DEV_SERVER_HOST "
-        docker login -u $NEXUS_USER -p $NEXUS_PASSWD $NEXUS_REGISTRY && pwd &&
+    - ssh -o StrictHostKeyChecking=no root@$DEV_SERVER_HOST:/root/loadbalance "
+        docker login -u $NEXUS_USER -p $NEXUS_PASSWD $NEXUS_REGISTRY &&
         docker-compose down &&
         docker-compose up -d"
   environment:
