@@ -16,25 +16,24 @@ stages:
   - build
   - deploy
 
-# run_unit_tests:
-#   image: node:alpine
-#   stage: test
-#   tags:
-#     - ec2
-#     - remote 
-#     - shell
-#   before_script:
-#     - ls
-#     - cd app
-#     - npm install
-#   script:
-#     - npm test
-#   artifacts:
-#     when: always
-#     paths:
-#       - app/junit.xml
-#     reports:
-#       junit: app/junit.xml
+run_unit_tests:
+   image: node:alpine
+   stage: test
+   tags:
+     - ec2
+     - remote 
+     - shell
+   before_script:
+     - cd app
+     - npm install
+   script:
+     - npm test
+   artifacts:
+     when: always
+     paths:
+       - app/junit.xml
+     reports:
+       junit: app/junit.xml
 
 
 build_image:
@@ -45,7 +44,6 @@ build_image:
     - shell
   before_script:
     - chmod 666 $PRIVATE_KEY_SERVER1
-    # - chmod 666 /var/run/docker.sock
   script:
     - docker build -t $IMAGE_NAME:$IMAGE_TAG .
 
