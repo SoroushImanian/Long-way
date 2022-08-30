@@ -6,7 +6,6 @@ workflow:
 
 variables:
   IMAGE_NAME: $NEXUS_REGISTRY/root/p1
-  IMAGE_TAG: "1.0"
   DEV_SERVER2_HOST: 172.16.16.102
   DEV_SERVER_HOST: 172.16.16.104
   DEV_ENDPOINT: http://172.16.16.104:3000
@@ -44,20 +43,29 @@ build_image:
     - shell
   before_script:
     - chmod 666 $PRIVATE_KEY_SERVER1
+    - export PACKAGE_JSON_VERSION=$(cat app/package.json | jq -r .version)
+    - export VERSION=$PACKAGE_JSON_VERSION.$CI_PIPELINE_IID
+    - echo $VERSION > version-file.txt
   script:
-    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker build -t $IMAGE_NAME:$VERSION .
+  artifacts:
+    paths:
+      - version-file.txt
 
 
 push_image:
   stage: build
+  needs:
+    - build_image
   tags:
     - ec2
     - remote
     - shell
   before_script:
+    - export VERSION=$(cat version-file.txt)
     - docker login -u $NEXUS_USER -p $NEXUS_PASSWD $NEXUS_REGISTRY
   script:
-    - docker push $IMAGE_NAME:$IMAGE_TAG
+    - docker push $IMAGE_NAME:$VERSION
 
 
 deploy_to_dev:
@@ -66,13 +74,15 @@ deploy_to_dev:
     - ec2
     - remote
     - shell
+  before_script:
+    - export VERSION=$(cat version-file.txt)
   script:
     - scp -o StrictHostKeyChecking=no ./docker-compose.yaml root@$DEV_SERVER_HOST:/root/loadbalance
     - ssh -o StrictHostKeyChecking=no root@$DEV_SERVER_HOST "
         cd loadbalancer && docker login -u $NEXUS_USER -p $NEXUS_PASSWD $NEXUS_REGISTRY &&
 
         export DC_IMAGE_NAME=$IMAGE_NAME &&
-        export DC_IMAGE_TAG=$IMAGE_TAG &&
+        export DC_IMAGE_TAG=$VERSION &&
 
         docker-compose down &&
         docker-compose up -d"
