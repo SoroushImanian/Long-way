@@ -12,6 +12,7 @@ variables:
   DEV_ENDPOINT: http://172.16.16.104:3000
 
 stages:
+  - test
   - build
   - deploy
 
