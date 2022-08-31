@@ -16,7 +16,7 @@ stages:
   - deploy
 
 run_unit_tests:
-   image: node:alpine
+   image: node:17-alpine3.14
    stage: test
    tags:
      - ec2
