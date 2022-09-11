@@ -1,7 +1,7 @@
 
 # Long Way
 
-Loadbalance between two App with HAproxy
+Loadbalance between two App with HAproxy And Nginx (Gitlab CI-CD)
 
 
 ## How it works?
@@ -13,7 +13,7 @@ Pay attention to the image below
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your Gitlab Project environment:
+> To run this project, you will need to add the following environment variables to your Gitlab Project Environment :
 
 
 `NEXUS_USER` --> `"admin"`
@@ -22,7 +22,11 @@ To run this project, you will need to add the following environment variables to
 
 `NEXUS_REGISTRY` --> `"YOUR_Nexus_Server_Host:5000"`
 
-## Install dependencies
+# Run The Project Manually
+
+  :warning:	**If you want to run this project manually, Follow this commands:**
+
+  ## Install dependencies
 
 Before running the project, we need to install Docker and Docker Compose
 
@@ -73,7 +77,8 @@ To verify that the installation was successful, you can run:
 ```bash
   docker compose version
 ```
-## Run Locally
+
+## Run Project
 
 Clone the project
 
@@ -90,5 +95,5 @@ Go to the project directory
 Run Project :
 
 ```bash
-  docker-compose -f docker-compose.yaml up -d
+  docker-compose -f docker-compose-manual.yaml up -d
 ```
