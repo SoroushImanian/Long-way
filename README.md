@@ -1,7 +1,7 @@
 
 # Long Way
 
-Loadbalance between two App with HAproxy And Nginx (Gitlab CI-CD)
+Loadbalance between two App with HAproxy And Nginx `(Gitlab CI-CD)`
 
 
 ## How it works?
