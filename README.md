@@ -13,7 +13,7 @@ Pay attention to the image below
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file
+To run this project, you will need to add the following environment variables to your Gitlab Project environment:
 
 
 `NEXUS_USER` --> `"admin"`
